@@ -15,9 +15,20 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/', function () {
-    // return view('welcome');
     return to_route('filament.auth.login');
 });
+
+// Simple public storefront by merchant username
+Route::get('/store/{username}', [\App\Http\Controllers\StorefrontController::class, 'home']);
+Route::get('/store/{username}/products', [\App\Http\Controllers\StorefrontController::class, 'products']);
+Route::get('/store/{username}/p/{slug}', [\App\Http\Controllers\StorefrontController::class, 'product']);
+Route::get('/store/{username}/cart', [\App\Http\Controllers\StoreCartController::class, 'view']);
+Route::post('/store/{username}/cart/add', [\App\Http\Controllers\StoreCartController::class, 'add']);
+Route::post('/store/{username}/cart/update', [\App\Http\Controllers\StoreCartController::class, 'update']);
+Route::post('/store/{username}/cart/remove', [\App\Http\Controllers\StoreCartController::class, 'remove']);
+Route::get('/store/{username}/checkout', [\App\Http\Controllers\StoreCheckoutController::class, 'show']);
+Route::post('/store/{username}/checkout', [\App\Http\Controllers\StoreCheckoutController::class, 'place']);
+Route::get('/store/{username}/thank-you', [\App\Http\Controllers\StoreCheckoutController::class, 'thankYou']);
 
 Route::get('login', function () {
     return to_route('filament.auth.login');

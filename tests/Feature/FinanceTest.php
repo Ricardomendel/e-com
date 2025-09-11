@@ -119,7 +119,7 @@ class FinanceTest extends TestCase
     /** @test */
     public function the_resource_for_create_withdraw_request_can_be_sent()
     {
-        $res = $this->getJson(route('finance.wd'), $this->header);
+        $res = $this->getJson(route('finance.wd.get'), $this->header);
 
         $res->assertOk()
             ->assertJson(
@@ -134,7 +134,7 @@ class FinanceTest extends TestCase
     {
         $wdData = ['name' => $this->merchantAccount->name, 'bankAccountName' => $this->merchantAccount->bank_account_name, 'bankAccountNumber' => "{$this->merchantAccount->bank_account_number}", 'amount' => 100000];
 
-        $res = $this->postJson(route('finance.wd'), $wdData);
+        $res = $this->postJson(route('finance.wd.post'), $wdData);
 
         $res->assertCreated()
             ->assertJson(

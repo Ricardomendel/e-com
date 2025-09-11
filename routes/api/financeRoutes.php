@@ -20,6 +20,6 @@ Route::prefix('merchant')
     ->group(function () {
         Route::apiResource("finances", FinanceController::class)
             ->only('index');
-        Route::get("finances/withdraw", [WithDrawController::class, "create"])->name("finance.wd");
-        Route::post("finances/withdraw", [WithDrawController::class, "store"])->name("finance.wd");
+        Route::get("finances/withdraw", [WithDrawController::class, "create"])->name("finance.wd.get");
+        Route::post("finances/withdraw", [WithDrawController::class, "store"])->name("finance.wd.post");
     });

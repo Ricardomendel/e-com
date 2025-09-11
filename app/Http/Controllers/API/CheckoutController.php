@@ -11,7 +11,7 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\UserResource;
-use Kavist\RajaOngkir\Facades\RajaOngkir;
+// use Kavist\RajaOngkir\Facades\RajaOngkir; // removed incompatible dependency
 use App\Http\Requests\API\CheckoutRequest;
 use App\Traits\MidtransPayment;
 use Symfony\Component\HttpFoundation\Response;
@@ -127,14 +127,19 @@ class CheckoutController extends Controller
     private function fetchRajaOngkir(array $data): array
     {
         try {
-            $result = RajaOngkir::ongkosKirim($data)
-                ->get();
-            foreach ($result[0]['costs'] as $costs_key => $costs) {
-                foreach ($costs['cost'] as $cost_key => $cost)
-                    $result[0]['costs'][$costs_key]['cost'][$cost_key]['value'] = currencyFormat($cost['value']);
-            }
-
-            return $result[0]['costs'];
+            // Temporary placeholder response to allow the system to run without RajaOngkir
+            return [
+                [
+                    'service' => $data['courier'] . '-REG',
+                    'description' => 'Regular Service',
+                    'cost' => [['value' => currencyFormat(20000), 'etd' => '2-3']]
+                ],
+                [
+                    'service' => $data['courier'] . '-EXP',
+                    'description' => 'Express Service',
+                    'cost' => [['value' => currencyFormat(40000), 'etd' => '1-2']]
+                ]
+            ];
         } catch (\Exception $e) {
             throw new ErrorException($e->getMessage());
         }

@@ -5,7 +5,7 @@ namespace Database\Seeders;
 use App\Models\City;
 use App\Models\Province;
 use Illuminate\Database\Seeder;
-use Kavist\RajaOngkir\Facades\RajaOngkir;
+// use Kavist\RajaOngkir\Facades\RajaOngkir; // removed incompatible dependency
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 
 class ProvinceSeeder extends Seeder
@@ -17,12 +17,19 @@ class ProvinceSeeder extends Seeder
      */
     public function run()
     {
-        $provinces = RajaOngkir::provinsi()->all();
+        // Placeholder seed to allow app to run without RajaOngkir
+        $provinces = [
+            ['province' => 'DKI Jakarta', 'province_id' => 6],
+            ['province' => 'Jawa Barat', 'province_id' => 9],
+        ];
 
         foreach ($provinces as $province) {
             $provinceResult = Province::create(['name' => $province['province']]);
 
-            $cities = RajaOngkir::kota()->dariProvinsi($province['province_id'])->get();
+            $cities = [
+                ['city_name' => 'Jakarta Selatan', 'type' => 'Kota', 'postal_code' => '12240'],
+                ['city_name' => 'Bandung', 'type' => 'Kota', 'postal_code' => '40111'],
+            ];
             foreach ($cities as $city) {
                 City::create([
                     'province_id' => $provinceResult['id'],

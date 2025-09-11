@@ -10,7 +10,7 @@ trait FinanceValidation
     {
         $this->withExceptionHandling();
 
-        $res = $this->postJson(route('finance.wd'), [], $this->header);
+        $res = $this->postJson(route('finance.wd.post'), [], $this->header);
 
         $res->assertUnprocessable()
             ->assertJsonCount(4, 'errors');
@@ -21,7 +21,7 @@ trait FinanceValidation
     {
         $this->withExceptionHandling();
 
-        $res = $this->postJson(route('finance.wd'), ['name' => 'john doe', 'bankAccountName' => 'john lennon', 'bankAccountNumber' => '12345', 'amount' => 100000], $this->header);
+        $res = $this->postJson(route('finance.wd.post'), ['name' => 'john doe', 'bankAccountName' => 'john lennon', 'bankAccountNumber' => '12345', 'amount' => 100000], $this->header);
 
         $res->assertUnprocessable()
             ->assertJsonPath('errors.name.0', 'The selected name is invalid.')
@@ -35,7 +35,7 @@ trait FinanceValidation
     {
         $this->withExceptionHandling();
 
-        $res = $this->postJson(route('finance.wd'), ['name' => $this->merchantAccount->name, 'bankAccountName' => $this->merchantAccount->bank_account_name, 'bankAccountNumber' => "{$this->merchantAccount->bank_account_number}", 'amount' => 500000], $this->header);
+        $res = $this->postJson(route('finance.wd.post'), ['name' => $this->merchantAccount->name, 'bankAccountName' => $this->merchantAccount->bank_account_name, 'bankAccountNumber' => "{$this->merchantAccount->bank_account_number}", 'amount' => 500000], $this->header);
 
         $res->assertUnprocessable()
             ->assertJsonPath('errors.amount.0', 'Your balance is not enough to withdraw funds.')

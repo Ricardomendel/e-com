@@ -27,7 +27,7 @@ class FinanceRequest extends FormRequest
      */
     public function rules(): array
     {
-        if ($this->routeIs('finance.wd') && $this->isMethod('POST')) {
+        if ($this->routeIs('finance.wd.post') && $this->isMethod('POST')) {
             $this->financeBalance =
                 $this->user()
                 ->merchantAccount

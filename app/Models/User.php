@@ -57,6 +57,11 @@ class User extends Authenticatable implements MustVerifyEmail, CanResetPassword,
         return $this->hasOne(MerchantAccount::class);
     }
 
+    public function merchantSetting(): HasOne
+    {
+        return $this->hasOne(MerchantSetting::class);
+    }
+
     /**
      * The finances that belong to the user
      *
@@ -169,6 +174,7 @@ class User extends Authenticatable implements MustVerifyEmail, CanResetPassword,
      */
     public function canAccessFilament(): bool
     {
-        return checkRole(['ADMIN', 'STAFF'], auth()->user()->role) && auth()->user()->status === 'ACTIVE';
+        // Allow ADMIN, STAFF, and MERCHANT to access the panel (demo purposes)
+        return checkRole(['ADMIN', 'STAFF', 'MERCHANT'], auth()->user()->role) && auth()->user()->status === 'ACTIVE';
     }
 }

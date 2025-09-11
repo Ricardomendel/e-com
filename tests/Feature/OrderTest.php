@@ -71,7 +71,7 @@ class OrderTest extends TestCase
                     ->count('data', 1)
             )
             ->assertJsonPath('data.0.invoiceNumber', 'test-123')
-            ->assertJsonPath('data.0.totalPrice', 'Rp. 500.000');
+            ->assertJsonPath('data.0.totalPrice', 'GH₵ 500,000');
     }
 
     /** @test */
@@ -85,9 +85,9 @@ class OrderTest extends TestCase
                 $json->hasAll(['code', 'message', 'data'])
                     ->count('data.products', 2)
             )
-            ->assertJsonPath('data.totalPrice', 'Rp. 500.000')
-            ->assertJsonPath('data.products.0.totalPrice', 'Rp. 200.000')
-            ->assertJsonPath('data.products.1.totalPrice', 'Rp. 300.000')
+            ->assertJsonPath('data.totalPrice', 'GH₵ 500,000')
+            ->assertJsonPath('data.products.0.totalPrice', 'GH₵ 200,000')
+            ->assertJsonPath('data.products.1.totalPrice', 'GH₵ 300,000')
             ->assertJsonPath('data.products.0.name', $this->product2->name)
             ->assertJsonPath('data.products.1.name', $this->product3->name);
     }

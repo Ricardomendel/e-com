@@ -17,12 +17,12 @@ function getUserWithRole(string $role): User
 {
     $user = User::query();
     if ($role === 'employee') {
-        $user->whereJsonContains('role', 'ADMIN')
-            ->orWhereJsonContains('role', 'SUPERADMIN');
+        $user->where('role', 'like', '%ADMIN%')
+            ->orWhere('role', 'like', '%SUPERADMIN%');
     } elseif ($role === 'merchant') {
-        $user->wherejsonContains('role', 'MERCHANT');
+        $user->where('role', 'like', '%MERCHANT%');
     } else {
-        $user->whereJsonContains('role', 'CUSTOMER');
+        $user->where('role', 'like', '%CUSTOMER%');
     }
 
     return $user->inRandomOrder()
@@ -65,7 +65,8 @@ function transformDateFormat(string $data, ?string $format = null): string|Carbo
  */
 function currencyFormat(int $value): string
 {
-    return "Rp. " .  number_format($value, 0, '.', '.');
+    // Ghanaian Cedis, zero-decimal display to match existing app behavior
+    return "GH₵ " . number_format($value, 0, '.', ',');
 }
 
 /**

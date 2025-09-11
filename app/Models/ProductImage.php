@@ -46,7 +46,11 @@ class ProductImage extends Model
      */
     public function getImage()
     {
-        return asset("/storage/product-images/{$this->name}");
+        $path = $this->name;
+        if (str_contains($path, '/')) {
+            return asset('storage/' . ltrim($path, '/'));
+        }
+        return asset('/storage/product-images/' . $path);
     }
 
     /**
