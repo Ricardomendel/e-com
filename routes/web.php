@@ -2,6 +2,7 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\AdminRegistrationController;
 
 /*
 |--------------------------------------------------------------------------
@@ -34,6 +35,11 @@ Route::get('login', function () {
     return to_route('filament.auth.login');
 })->name('login');
 
+// Admin self-registration, only if no admin/staff exists yet
+Route::middleware('web')->group(function () {
+    Route::get('/admin/register', [AdminRegistrationController::class, 'show']);
+    Route::post('/admin/register', [AdminRegistrationController::class, 'store']);
+});
 // Auth::routes();
 
 
