@@ -35,6 +35,11 @@ class AppServiceProvider extends ServiceProvider
     {
         Carbon::setLocale(config('app.locale'));
 
+        // Force HTTPS URLs when behind a proxy (Render)
+        if (config('app.env') === 'production') {
+            \URL::forceScheme('https');
+        }
+
         Filament::serving(function () {
             Filament::registerNavigationGroups([
                 'Admin Management',
