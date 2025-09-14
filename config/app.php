@@ -55,7 +55,15 @@ return [
     */
 
     'url' => env('APP_URL', 'http://localhost'),
-    'asset_url' => env('ASSET_URL'),
+    'asset_url' => value(function () {
+        $raw = env('ASSET_URL');
+        if (!is_string($raw) || $raw === '') {
+            return null;
+        }
+        $normalized = preg_replace('#^https:/([^/])#i', 'https://$1', $raw);
+        $normalized = preg_replace('#^http:/([^/])#i', 'http://$1', $normalized);
+        return rtrim($normalized, '/');
+    }),
 
     'asset_url' => env('ASSET_URL'),
 

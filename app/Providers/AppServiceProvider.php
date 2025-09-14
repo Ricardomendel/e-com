@@ -38,6 +38,27 @@ class AppServiceProvider extends ServiceProvider
         // Force HTTPS URLs when behind a proxy (Render)
         if (config('app.env') === 'production') {
             \URL::forceScheme('https');
+
+            // Normalize APP_URL and ASSET_URL to avoid malformed links like "/https:/path"
+            $rootUrl = config('app.url');
+            if (is_string($rootUrl) && $rootUrl !== '') {
+                $rootUrl = preg_replace('#^https:/([^/])#i', 'https://$1', $rootUrl);
+                $rootUrl = preg_replace('#^http:/([^/])#i', 'http://$1', $rootUrl);
+                $rootUrl = rtrim($rootUrl, '/');
+                \URL::forceRootUrl($rootUrl);
+            }
+
+            $assetUrl = config('app.asset_url');
+            if (is_string($assetUrl) && $assetUrl !== '') {
+                $assetUrl = preg_replace('#^https:/([^/])#i', 'https://$1', $assetUrl);
+                $assetUrl = preg_replace('#^http:/([^/])#i', 'http://$1', $assetUrl);
+                $assetUrl = rtrim($assetUrl, '/');
+                if (!preg_match('#^https?://#i', $assetUrl)) {
+                    // Ignore invalid ASSET_URL to prevent broken paths
+                    $assetUrl = null;
+                }
+                config(['app.asset_url' => $assetUrl]);
+            }
         }
 
         Filament::serving(function () {

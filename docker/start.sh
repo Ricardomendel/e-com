@@ -16,9 +16,7 @@ php artisan key:generate --force
 php artisan storage:link || true
 
 # Optimize
-php artisan config:cache || true
-php artisan route:cache || true
-php artisan view:cache || true
+php artisan optimize:clear || true
 
 # Migrate and seed if enabled
 if [ "${RUN_MIGRATIONS:-true}" = "true" ]; then
