@@ -59,11 +59,19 @@ class AppServiceProvider extends ServiceProvider
                 }
                 config(['app.asset_url' => $assetUrl]);
             }
+
+            // Ensure Livewire uses same base if not explicitly set
+            if (empty(config('livewire.asset_url'))) {
+                $effective = $assetUrl ?? ($rootUrl ?? null);
+                if (is_string($effective) && $effective !== '') {
+                    config(['livewire.asset_url' => $effective]);
+                }
+            }
         }
 
         Filament::serving(function () {
-            // Ensure Livewire/Filament assets use correct base URL
-            if (config('app.asset_url')) {
+            // Ensure Filament picks the correct base when serving assets
+            if (config('app.asset_url') && empty(config('livewire.asset_url'))) {
                 config(['livewire.asset_url' => config('app.asset_url')]);
             }
             Filament::registerNavigationGroups([

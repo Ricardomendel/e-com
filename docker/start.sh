@@ -18,6 +18,9 @@ php artisan storage:link || true
 # Optimize
 php artisan optimize:clear || true
 
+# Publish Filament assets if route exists (safe no-op otherwise)
+php artisan filament:upgrade || true
+
 # Migrate and seed if enabled
 if [ "${RUN_MIGRATIONS:-true}" = "true" ]; then
   php artisan migrate --force
