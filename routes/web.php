@@ -17,7 +17,7 @@ use App\Http\Controllers\RegistrationController;
 */
 
 Route::get('/', function () {
-    return to_route('filament.auth.login');
+    return view('portal');
 });
 
 // Simple public storefront by merchant username
