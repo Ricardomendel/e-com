@@ -62,6 +62,10 @@ class AppServiceProvider extends ServiceProvider
         }
 
         Filament::serving(function () {
+            // Ensure Livewire/Filament assets use correct base URL
+            if (config('app.asset_url')) {
+                config(['livewire.asset_url' => config('app.asset_url')]);
+            }
             Filament::registerNavigationGroups([
                 'Admin Management',
                 'Staff Management',
