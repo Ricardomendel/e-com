@@ -51,7 +51,8 @@ class RegistrationController extends Controller
             $phone = '08' . str_pad((string) random_int(0, 99999999999), 11, '0', STR_PAD_LEFT);
         }
 
-        User::create([
+        try {
+            User::create([
             'name' => $validated['name'],
             'username' => $username,
             'email' => $validated['email'],
@@ -59,7 +60,15 @@ class RegistrationController extends Controller
             'role' => $role,
             'status' => 'INACTIVE',
             'password' => Hash::make($validated['password']),
+            'email_verified_at' => now(),
+            'city_id' => null,
+            'nik' => null,
+            'address' => null,
         ]);
+        } catch (\Throwable $e) {
+            \Log::error('Registration failed', ['error' => $e->getMessage()]);
+            return back()->withErrors(['name' => 'Registration failed. Please try again.'])->withInput();
+        }
 
         $message = $role === 'STAFF'
             ? 'Registration submitted. Admin will approve your staff account.'
