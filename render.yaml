@@ -1,0 +1,50 @@
+services:
+  - type: web
+    name: laracommerce-api
+    env: docker
+    plan: free
+    region: oregon
+    healthCheckPath: /
+    autoDeploy: true
+    envVars:
+      - key: APP_ENV
+        value: production
+      - key: APP_DEBUG
+        value: false
+      - key: APP_KEY
+        generateValue: true
+      - key: LOG_CHANNEL
+        value: stderr
+      - key: DB_CONNECTION
+        value: pgsql
+      - key: DB_HOST
+        fromDatabase: postgres
+        name: connectionString
+      - key: DB_PORT
+        value: 5432
+      - key: DB_DATABASE
+        fromDatabase: postgres
+        name: database
+      - key: DB_USERNAME
+        fromDatabase: postgres
+        name: user
+      - key: DB_PASSWORD
+        fromDatabase: postgres
+        name: password
+      - key: SESSION_DRIVER
+        value: cookie
+      - key: QUEUE_CONNECTION
+        value: sync
+      - key: RUN_MIGRATIONS
+        value: true
+    disk:
+      name: storage
+      mountPath: /var/www/storage
+      sizeGB: 1
+
+databases:
+  - name: postgres
+    plan: free
+    ipAllowList: []
+
+
