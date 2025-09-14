@@ -35,35 +35,31 @@ class AppServiceProvider extends ServiceProvider
     {
         Carbon::setLocale(config('app.locale'));
 
-        // Force HTTPS URLs when behind a proxy (Render)
+        // Force HTTPS and safely set root URL only if APP_URL is valid
         if (config('app.env') === 'production') {
             \URL::forceScheme('https');
 
-            // Normalize APP_URL and ASSET_URL to avoid malformed links like "/https:/path"
-            $rootUrl = config('app.url');
-            if (is_string($rootUrl) && $rootUrl !== '') {
-                $rootUrl = preg_replace('#^https:/([^/])#i', 'https://$1', $rootUrl);
-                $rootUrl = preg_replace('#^http:/([^/])#i', 'http://$1', $rootUrl);
-                $rootUrl = rtrim($rootUrl, '/');
-                \URL::forceRootUrl($rootUrl);
+            $rootUrl = rtrim((string) config('app.url'), '/');
+            $parts = parse_url($rootUrl) ?: [];
+            $scheme = $parts['scheme'] ?? null;
+            $host = $parts['host'] ?? null;
+            if ($scheme && $host) {
+                \URL::forceRootUrl($scheme.'://'.$host);
             }
 
-            $assetUrl = config('app.asset_url');
-            if (is_string($assetUrl) && $assetUrl !== '') {
-                $assetUrl = preg_replace('#^https:/([^/])#i', 'https://$1', $assetUrl);
-                $assetUrl = preg_replace('#^http:/([^/])#i', 'http://$1', $assetUrl);
-                $assetUrl = rtrim($assetUrl, '/');
-                if (!preg_match('#^https?://#i', $assetUrl)) {
-                    // Ignore invalid ASSET_URL to prevent broken paths
-                    $assetUrl = null;
+            $assetUrl = (string) config('app.asset_url');
+            if ($assetUrl !== '') {
+                $assetParts = parse_url($assetUrl) ?: [];
+                if (!isset($assetParts['scheme'], $assetParts['host'])) {
+                    config(['app.asset_url' => null]);
+                } else {
+                    config(['app.asset_url' => rtrim($assetParts['scheme'].'://'.$assetParts['host'], '/')]);
                 }
-                config(['app.asset_url' => $assetUrl]);
             }
 
-            // Ensure Livewire uses same base if not explicitly set
             if (empty(config('livewire.asset_url'))) {
-                $effective = $assetUrl ?? ($rootUrl ?? null);
-                if (is_string($effective) && $effective !== '') {
+                $effective = config('app.asset_url') ?: ($scheme && $host ? $scheme.'://'.$host : null);
+                if ($effective) {
                     config(['livewire.asset_url' => $effective]);
                 }
             }
