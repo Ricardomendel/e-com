@@ -10,7 +10,10 @@ if [ ! -f .env ]; then
   cp .env.example .env || true
 fi
 
-php artisan key:generate --force
+# Generate app key only if missing
+if ! grep -qE '^APP_KEY=.+$' .env; then
+  php artisan key:generate --force
+fi
 
 # Storage link
 php artisan storage:link || true
