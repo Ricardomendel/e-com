@@ -18,6 +18,17 @@ php artisan storage:link || true
 # Optimize
 php artisan optimize:clear || true
 
+# Ensure SQLite database file exists if using sqlite
+if [ "${DB_CONNECTION:-}" = "sqlite" ]; then
+  if [ -z "${DB_DATABASE:-}" ]; then
+    export DB_DATABASE="/var/www/storage/database.sqlite"
+  fi
+  mkdir -p "$(dirname "$DB_DATABASE")"
+  if [ ! -f "$DB_DATABASE" ]; then
+    touch "$DB_DATABASE"
+  fi
+fi
+
 # Publish Filament assets if route exists (safe no-op otherwise)
 php artisan filament:upgrade || true
 
