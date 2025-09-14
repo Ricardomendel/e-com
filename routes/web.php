@@ -3,6 +3,7 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AdminRegistrationController;
+use App\Http\Controllers\RegistrationController;
 
 /*
 |--------------------------------------------------------------------------
@@ -39,6 +40,11 @@ Route::get('login', function () {
 Route::middleware('web')->group(function () {
     Route::get('/admin/register', [AdminRegistrationController::class, 'show']);
     Route::post('/admin/register', [AdminRegistrationController::class, 'store']);
+    // Public registrations
+    Route::get('/register/merchant', [RegistrationController::class, 'showMerchant']);
+    Route::post('/register/merchant', [RegistrationController::class, 'storeMerchant']);
+    Route::get('/register/staff', [RegistrationController::class, 'showStaff']);
+    Route::post('/register/staff', [RegistrationController::class, 'storeStaff']);
 });
 // Auth::routes();
 

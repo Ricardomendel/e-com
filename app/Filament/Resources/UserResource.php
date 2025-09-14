@@ -21,6 +21,7 @@ use Illuminate\Database\Eloquent\Builder;
 use App\Filament\Resources\UserResource\Pages;
 use App\Filament\Resources\UserResource\Pages\EditUser;
 use App\Filament\Resources\UserResource\Pages\CreateUser;
+use Filament\Tables\Actions\Action;
 
 class UserResource extends Resource
 {
@@ -158,6 +159,19 @@ class UserResource extends Resource
                 Tables\Actions\EditAction::make(),
                 Tables\Actions\DeleteAction::make()
                     ->successNotificationTitle('User deleted successfully'),
+                Action::make('approve')
+                    ->label('Approve')
+                    ->visible(fn (User $record) => $record->status === 'INACTIVE')
+                    ->requiresConfirmation()
+                    ->action(function (User $record) {
+                        // Only ADMIN can approve STAFF; ADMIN or STAFF can approve MERCHANT
+                        $roles = auth()->user()->role;
+                        $actor = is_array($roles) ? head($roles) : $roles;
+                        $target = is_array($record->role) ? head($record->role) : $record->role;
+                        $allowed = ($target === 'STAFF' && $actor === 'ADMIN') || ($target === 'MERCHANT' && in_array($actor, ['ADMIN','STAFF']));
+                        abort_unless($allowed, 403);
+                        $record->update(['status' => 'ACTIVE']);
+                    })
             ])
             ->bulkActions([
                 Tables\Actions\DeleteBulkAction::make(),
