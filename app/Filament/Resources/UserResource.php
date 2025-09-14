@@ -46,7 +46,7 @@ class UserResource extends Resource
                     ->options(fn () => City::all()->pluck('name', 'id'))
                     ->preload()
                     ->searchable()
-                    ->required()
+                    ->nullable()
                     ->exists('cities', 'id'),
                 TextInput::make('name')
                     ->required()
