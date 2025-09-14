@@ -4,6 +4,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AdminRegistrationController;
 use App\Http\Controllers\RegistrationController;
+use App\Http\Controllers\PortalController;
 
 /*
 |--------------------------------------------------------------------------
@@ -38,6 +39,7 @@ Route::get('login', function () {
 
 // Admin self-registration, only if no admin/staff exists yet
 Route::middleware('web')->group(function () {
+    Route::post('/portal/login', [PortalController::class, 'login']);
     Route::get('/admin/register', [AdminRegistrationController::class, 'show']);
     Route::post('/admin/register', [AdminRegistrationController::class, 'store']);
     // Public registrations
