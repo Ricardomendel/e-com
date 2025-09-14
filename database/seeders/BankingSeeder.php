@@ -16,13 +16,19 @@ class BankingSeeder extends Seeder
     public function run()
     {
         $bankings = [
-            ['name' => 'PT. BANK CENTRAL ASIA TBK.', 'alias' => 'bca', 'created_by' => getUserWithRole('employee')->id],
-            ['name' => 'PT. BANK NEGARA INDONESIA (PERSERO)', 'alias' => 'bni', 'created_by' => getUserWithRole('employee')->id],
-            ['name' => 'PT. BANK RAKYAT INDONESIA (PERSERO)', 'alias' => 'bri', 'created_by' => getUserWithRole('employee')->id],
-            ['name' => 'PT. BANK MANDIRI (PERSERO) TBK.', 'alias' => 'mandiri', 'created_by' => getUserWithRole('employee')->id]
+            ['name' => 'PT. BANK CENTRAL ASIA TBK.', 'alias' => 'bca'],
+            ['name' => 'PT. BANK NEGARA INDONESIA (PERSERO)', 'alias' => 'bni'],
+            ['name' => 'PT. BANK RAKYAT INDONESIA (PERSERO)', 'alias' => 'bri'],
+            ['name' => 'PT. BANK MANDIRI (PERSERO) TBK.', 'alias' => 'mandiri'],
         ];
 
-        foreach ($bankings as $banking)
-            Banking::create($banking);
+        $createdBy = optional(getUserWithRole('employee'))->id;
+
+        foreach ($bankings as $banking) {
+            Banking::firstOrCreate(
+                ['alias' => strtolower($banking['alias'])],
+                ['name' => ucwords(strtolower($banking['name'])), 'created_by' => $createdBy]
+            );
+        }
     }
 }
