@@ -16,13 +16,17 @@ class CategorySeeder extends Seeder
      */
     public function run()
     {
-        $categories = [
-            ['name' => 'Gadget', 'created_by' => getUserWithRole('employee')->id],
-            ['name' => 'Furniture', 'created_by' => getUserWithRole('employee')->id],
-            ['name' => 'Sneaker', 'created_by' => getUserWithRole('employee')->id]
-        ];
+        $names = ['Gadget', 'Furniture', 'Sneaker'];
 
-        foreach ($categories as $category)
-            Category::create($category);
+        foreach ($names as $name) {
+            $slug = str($name)->slug();
+            Category::firstOrCreate(
+                ['slug' => $slug],
+                [
+                    'name' => $name,
+                    'created_by' => optional(getUserWithRole('employee'))->id,
+                ]
+            );
+        }
     }
 }
