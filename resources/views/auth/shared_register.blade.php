@@ -27,7 +27,7 @@
                         </div>
                         <div class="mb-3">
                             <label class="form-label">Phone (optional)</label>
-                            <input type="text" name="phone" class="form-control" value="{{ old('phone') }}" placeholder="08xxxxxxxxxxx">
+                            <input type="tel" name="phone" class="form-control" value="{{ old('phone') }}" placeholder="0xxxxxxxxx (10 digits)" pattern="[0-9]{10}" maxlength="10">
                             @error('phone')<div class="text-danger small">{{ $message }}</div>@enderror
                         </div>
                         <div class="mb-3">

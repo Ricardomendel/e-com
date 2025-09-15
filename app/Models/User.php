@@ -174,7 +174,8 @@ class User extends Authenticatable implements MustVerifyEmail, CanResetPassword,
      */
     public function canAccessFilament(): bool
     {
-        // Allow ADMIN, STAFF, and MERCHANT to access the panel (demo purposes)
-        return checkRole(['ADMIN', 'STAFF', 'MERCHANT'], $this->role) && $this->status === 'ACTIVE';
+        // Only ADMIN users can access the Filament admin panel
+        // STAFF and MERCHANT have their own separate dashboards
+        return checkRole(['ADMIN'], $this->role) && $this->status === 'ACTIVE';
     }
 }

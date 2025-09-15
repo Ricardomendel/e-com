@@ -24,11 +24,17 @@ class BankingSeeder extends Seeder
 
         $createdBy = optional(getUserWithRole('employee'))->id;
 
-        foreach ($bankings as $banking) {
-            Banking::firstOrCreate(
-                ['alias' => strtolower($banking['alias'])],
-                ['name' => ucwords(strtolower($banking['name'])), 'created_by' => $createdBy]
-            );
-        }
+        $rows = collect($bankings)->map(function ($b) use ($createdBy) {
+            return [
+                'alias' => strtolower($b['alias']),
+                'name' => ucwords(strtolower($b['name'])),
+                'created_by' => $createdBy,
+                'updated_at' => now(),
+                'created_at' => now(),
+            ];
+        })->all();
+
+        // Upsert ensures idempotency on alias
+        Banking::upsert($rows, ['alias'], ['name', 'created_by', 'updated_at']);
     }
 }
